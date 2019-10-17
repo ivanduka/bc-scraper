@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ivanduka/bc-scraper#readme",
   "dependencies": {
+    "nexe": "^3.3.2",
     "pending-xhr-puppeteer": "^2.1.0",
     "puppeteer": "^1.20.0"
   }
