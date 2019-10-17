@@ -72,7 +72,7 @@ const app = async () => {
     }, button5);
     console.log(`Saving '${fileName}' to '${__dirname}'...`);
     fs.writeFileSync(path.join(__dirname, fileName), data);
-    console.log("File is saved!");
+    console.log("File is saved! All hail the glorious Data, Design and Analytics team!");
   } catch (error) {
     console.error(error);
   } finally {
