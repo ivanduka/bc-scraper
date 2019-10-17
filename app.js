@@ -1,6 +1,11 @@
 const fs = require("fs");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
 const { PendingXHR } = require("pending-xhr-puppeteer");
+const path = require("path");
+
+const download = require("download-chromium");
+const os = require("os");
+const tmp = os.tmpdir();
 
 const fileName = "well_authorizations_issued.csv";
 
@@ -11,7 +16,7 @@ const button1 =
   "#a_Collapsible1_WA_ISSUED_control_panel_content > ul > li:nth-child(1) > span.a-IRR-controls-cell.a-IRR-controls-cell--remove > button";
 
 const button2 =
-"#a_Collapsible1_WA_ISSUED_control_panel_content > ul > li > span.a-IRR-controls-cell.a-IRR-controls-cell--remove > button";
+  "#a_Collapsible1_WA_ISSUED_control_panel_content > ul > li > span.a-IRR-controls-cell.a-IRR-controls-cell--remove > button";
 
 const button3 = "#WA_ISSUED_actions_button";
 
@@ -22,12 +27,21 @@ const button5 = "#WA_ISSUED_download_CSV";
 const app = async () => {
   let browser;
   try {
-    console.log("Opening a browser...")
-    browser = await puppeteer.launch({ headless: true });
+    console.log("Downloading a browser if needed...");
+    const exec = await download({
+      revision: 694644,
+      installPath: `${tmp}/.local-chromium`
+    });
+
+    console.log("Opening a browser...");
+    browser = await puppeteer.launch({
+      executablePath: exec
+    });
+
     console.log("Opening a new page...");
     const page = await browser.newPage();
     const pendingXHR = new PendingXHR(page);
-    
+
     console.log(`Going to ${url}...`);
     await page.goto(url);
 
@@ -56,8 +70,8 @@ const app = async () => {
         // credentials: "include"
       }).then(res => res.text());
     }, button5);
-    console.log(`Saving ${fileName}...`);
-    fs.writeFileSync("./" + fileName, data);
+    console.log(`Saving '${fileName}' to '${__dirname}'...`);
+    fs.writeFileSync(path.join(__dirname, fileName), data);
     console.log("File is saved!");
   } catch (error) {
     console.error(error);
