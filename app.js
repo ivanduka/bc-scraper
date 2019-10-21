@@ -35,11 +35,13 @@ const app = async () => {
 
     console.log("Opening a browser...");
     browser = await puppeteer.launch({
-      executablePath: exec
+      executablePath: exec,
+      headless: true
     });
 
     console.log("Opening a new page...");
     const page = await browser.newPage();
+    await page.setCacheEnabled(false);
     const pendingXHR = new PendingXHR(page);
 
     console.log(`Going to ${url}...`);
